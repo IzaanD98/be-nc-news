@@ -1,4 +1,4 @@
-const { getAllTopics } = require("../models/newsModel");
+const { getAllTopics, getAllArticles } = require("../models/newsModel");
 
 exports.fetchAllTopics = (request, response, next) => {
   getAllTopics()
@@ -6,7 +6,16 @@ exports.fetchAllTopics = (request, response, next) => {
       response.status(200).send({ topics });
     })
     .catch((error) => {
-      console.log(error);
+      next(error);
+    });
+};
+
+exports.fetchAllArticles = (request, response, next) => {
+  getAllArticles()
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch((error) => {
       next(error);
     });
 };
