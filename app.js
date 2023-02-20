@@ -6,8 +6,6 @@ const {
 
 const app = express();
 
-app.use(express());
-
 app.get("/api/topics", fetchAllTopics);
 
 app.use(handle500StatusCodes);
