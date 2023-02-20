@@ -49,7 +49,6 @@ describe("app", () => {
         .expect(200)
         .then(({ body }) => {
           const { articles } = body;
-          console.log(articles);
           expect(articles).not.toHaveLength(0);
           expect(articles).toBeSortedBy("created_at", {
             descending: true,
