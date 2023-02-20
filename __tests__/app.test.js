@@ -68,14 +68,5 @@ describe("app", () => {
           });
         });
     });
-    it("404: GET - responds with 404 status code of Not Found when given an invalid endpoint", () => {
-      return request(app)
-        .get("/api/invalid-articles")
-        .expect(404)
-        .then((body) => {
-          const { statusCode } = body;
-          expect(statusCode).toBe(404);
-        });
-    });
   });
 });

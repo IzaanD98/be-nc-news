@@ -6,7 +6,6 @@ exports.fetchAllTopics = (request, response, next) => {
       response.status(200).send({ topics });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };
@@ -17,7 +16,6 @@ exports.fetchAllArticles = (request, response, next) => {
       response.status(200).send({ articles });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };
