@@ -6,6 +6,14 @@ exports.handle400StatusCodes = (error, request, response, next) => {
   }
 };
 
+exports.handleCustomErrors = (error, request, response, next) => {
+  if (error.status && error.message) {
+    response.status(error.status).send(error.message);
+  } else {
+    next(error);
+  }
+};
+
 exports.handle500StatusCodes = (error, request, response, next) => {
   response.status(500).send("Internal Server Error");
 };
