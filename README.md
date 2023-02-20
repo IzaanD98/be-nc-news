@@ -7,8 +7,8 @@ To connect the two databases, you need to create two files that allow access to 
 These files should contain the following lines:
 
 ```
-PGDATABASE=nc_news_test
-PGDATABASE=nc_news
+PGDATABASE=nc_news_test ---> in .env.test
+PGDATABASE=nc_news  ---> in .env.development
 ```
 
 The first line sets the database name for the test environment, while the second line sets the database name for the development environment. With these files in place, your application should be able to connect to the appropriate database depending on the environment in which it is running.
