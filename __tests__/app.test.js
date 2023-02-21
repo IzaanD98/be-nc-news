@@ -299,7 +299,6 @@ describe("app", () => {
         .expect(200)
         .then(({ body }) => {
           const { users } = body;
-          console.log(body);
           users.forEach((user) => {
             expect(user).toHaveProperty("username", expect.any(String));
             expect(user).toHaveProperty("name", expect.any(String));
