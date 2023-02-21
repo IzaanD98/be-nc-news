@@ -2,6 +2,7 @@ const {
   getAllTopics,
   getAllArticles,
   getCommentsByArticleId,
+  getArticleById,
 } = require("../models/newsModel");
 
 exports.fetchAllTopics = (request, response, next) => {
@@ -29,6 +30,17 @@ exports.fetchCommentsByArticleId = (request, response, next) => {
   getCommentsByArticleId(id)
     .then((comments) => {
       response.status(200).send({ comments });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.fetchArticleById = (request, response, next) => {
+  const id = request.params.article_id;
+  getArticleById(id)
+    .then((articles) => {
+      response.status(200).send({ articles });
     })
     .catch((error) => {
       next(error);

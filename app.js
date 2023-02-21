@@ -3,6 +3,7 @@ const {
   fetchAllTopics,
   fetchAllArticles,
   fetchCommentsByArticleId,
+  fetchArticleById,
 } = require("./controllers/newsController");
 const {
   handle500StatusCodes,
@@ -12,11 +13,11 @@ const {
 
 const app = express();
 
-app.get("/api/topics", fetchAllTopics);
-
-app.get("/api/articles", fetchAllArticles);
-
-app.get("/api/articles/:article_id/comments", fetchCommentsByArticleId);
+app
+  .get("/api/topics", fetchAllTopics)
+  .get("/api/articles", fetchAllArticles)
+  .get("/api/articles/:article_id", fetchArticleById)
+  .get("/api/articles/:article_id/comments", fetchCommentsByArticleId);
 
 app.use(handle400StatusCodes);
 app.use(handleCustomErrors);
