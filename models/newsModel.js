@@ -19,19 +19,6 @@ exports.getAllArticles = () => {
   });
 };
 
-exports.getCommentsByArticleId = (id) => {
-  const queryString = `SELECT * FROM comments WHERE article_id = $1
-  ORDER BY created_at DESC`;
-
-  return db.query(queryString, [id]).then((results) => {
-    if (results.rows.length === 0) {
-      return Promise.reject({ status: 404, message: "Comment not found" });
-    } else {
-      return results.rows;
-    }
-  });
-};
-
 exports.getArticleById = (id) => {
   const queryString = `SELECT * FROM articles WHERE article_id = $1`;
 
@@ -41,5 +28,28 @@ exports.getArticleById = (id) => {
     } else {
       return results.rows;
     }
+  });
+};
+
+exports.getCommentsByArticleId = (id) => {
+  const queryString = `SELECT * FROM comments WHERE article_id = $1
+  ORDER BY created_at DESC`;
+
+  return db.query(queryString, [id]).then((results) => {
+    return results.rows;
+  });
+};
+
+exports.addCommentByArticleId = (id, comment) => {
+  const { username, body } = comment;
+  const queryString = `
+  INSERT INTO comments 
+  (author, body, article_id)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *
+  `;
+  return db.query(queryString, [username, body, id]).then((results) => {
+    return results.rows[0];
   });
 };
