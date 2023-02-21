@@ -278,4 +278,15 @@ describe("/api/articles/:article_id", () => {
         expect(error).toBe("Article not found");
       });
   });
+  it("400: PATCH -  responds with 400 status code if body is missing", () => {
+    const update = {};
+    return request(app)
+      .patch("/api/articles/1")
+      .send(update)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
 });
