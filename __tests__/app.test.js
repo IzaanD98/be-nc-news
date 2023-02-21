@@ -132,22 +132,80 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
-  it("400: GET -  responds with 404 status code of Bad Request when given a string instead of a number", () => {
+  it("200: GET -  responds with an empty array of if comments are missing", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(0);
+      });
+  });
+  it("400: GET -  responds with 400 status code of Bad Request when given a string instead of a number", () => {
     return request(app)
       .get("/api/articles/banana/comments")
       .expect(400)
-      .then((body) => {
-        const { statusCode } = body;
-        expect(statusCode).toBe(400);
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
       });
   });
   it("404: GET -  responds with 404 status code of Not Found when given a article_id which doesn't exist", () => {
     return request(app)
       .get("/api/articles/1000/comments")
       .expect(404)
-      .then((body) => {
-        const { statusCode } = body;
-        expect(statusCode).toBe(404);
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Article not found");
+      });
+  });
+});
+
+describe("/api/articles/:article_id/comments", () => {
+  it("201: POST - responds with the newly added comment object", () => {
+    const item = {
+      username: "butter_bridge",
+      body: "Hello my name sam",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(item)
+      .expect(201)
+      .then(({ body }) => {
+        const { newItem } = body;
+        expect(newItem).toHaveProperty("comment_id", expect.any(Number));
+        expect(newItem).toHaveProperty("votes", expect.any(Number));
+        expect(newItem).toHaveProperty("created_at", expect.any(String));
+        expect(newItem).toHaveProperty("author", "butter_bridge");
+        expect(newItem).toHaveProperty("body", "Hello my name sam");
+        expect(newItem).toHaveProperty("article_id", 1);
+      });
+  });
+  it("404: GET -  responds with 404 status code of Not Found when given a article_id which doesn't exist", () => {
+    const item = {
+      username: "butter_bridge",
+      body: "Hello my name sam",
+    };
+    return request(app)
+      .post("/api/articles/1000/comments")
+      .send(item)
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Not Found");
+      });
+  });
+  it("400: GET -  responds with 400 status code of Bad Request when given a string", () => {
+    const item = {
+      username: "butter_bridge",
+      body: "Hello my name sam",
+    };
+    return request(app)
+      .post("/api/articles/banana/comments")
+      .send(item)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
       });
   });
 });
