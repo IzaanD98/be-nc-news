@@ -40,7 +40,11 @@ exports.updateArticleById = (id, inc_votes) => {
   `;
 
   return db.query(query_string, [inc_votes, id]).then((results) => {
-    return results.rows[0];
+    if (results.rowCount === 0) {
+      return Promise.reject({ status: 404, message: "Article not found" });
+    } else {
+      return results.rows[0];
+    }
   });
 };
 

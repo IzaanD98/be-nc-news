@@ -180,7 +180,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(newItem).toHaveProperty("article_id", 1);
       });
   });
-  it("404: GET -  responds with 404 status code of Not Found when given a article_id which doesn't exist", () => {
+  it("404: POST -  responds with 404 status code of Not Found when given a article_id which doesn't exist", () => {
     const item = {
       username: "butter_bridge",
       body: "Hello my name sam",
@@ -194,7 +194,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(error).toBe("Not Found");
       });
   });
-  it("400: GET -  responds with 400 status code of Bad Request when given a string", () => {
+  it("400: POST -  responds with 400 status code of Bad Request when given a string", () => {
     const item = {
       username: "butter_bridge",
       body: "Hello my name sam",
@@ -208,7 +208,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(error).toBe("Bad Request");
       });
   });
-  it("404: GET -  responds with 404 status code when username doesn't exist", () => {
+  it("404: POST -  responds with 404 status code when username doesn't exist", () => {
     const item = {
       username: "sam",
       body: "Hello my name sam",
@@ -222,7 +222,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(error).toBe("Not Found");
       });
   });
-  it("400: GET -  responds with 400 status code when body is missing", () => {
+  it("400: POST -  responds with 400 status code when body is missing", () => {
     const item = {
       username: "butter_bridge",
     };
@@ -256,5 +256,26 @@ describe("/api/articles/:article_id", () => {
         expect(article).toHaveProperty("body", expect.any(String));
       });
   });
+  it("400: PATCH -  responds with 400 status code passed a string for votes", () => {
+    const update = { inc_votes: "hello" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(update)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+  it("404: PATCH -  responds with 404 status code when passed an article_id which doesn't exist", () => {
+    const update = { inc_votes: 50 };
+    return request(app)
+      .patch("/api/articles/1000")
+      .send(update)
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Article not found");
+      });
+  });
 });
-``;

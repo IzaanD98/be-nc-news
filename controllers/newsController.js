@@ -41,7 +41,6 @@ exports.fetchArticleById = (request, response, next) => {
 exports.patchArticleById = (request, response, next) => {
   const id = request.params.article_id;
   const { inc_votes } = request.body;
-  console.log(inc_votes, id);
   updateArticleById(id, inc_votes)
     .then((article) => {
       response.status(200).send({ article });
