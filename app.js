@@ -4,6 +4,7 @@ const {
   fetchAllArticles,
   fetchCommentsByArticleId,
   fetchArticleById,
+  patchArticleById,
   postCommentByArticleId,
   fetchAllUsers,
 } = require("./controllers/newsController");
@@ -22,6 +23,7 @@ app
   .get("/api/articles", fetchAllArticles)
   .get("/api/articles/:article_id", fetchArticleById)
   .get("/api/articles/:article_id/comments", fetchCommentsByArticleId)
+  .patch("/api/articles/:article_id", patchArticleById)
   .post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.use(handle400StatusCodes);

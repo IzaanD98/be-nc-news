@@ -31,6 +31,23 @@ exports.getArticleById = (id) => {
   });
 };
 
+exports.updateArticleById = (id, inc_votes) => {
+  const query_string = `
+  UPDATE articles 
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *
+  `;
+
+  return db.query(query_string, [inc_votes, id]).then((results) => {
+    if (results.rowCount === 0) {
+      return Promise.reject({ status: 404, message: "Article not found" });
+    } else {
+      return results.rows[0];
+    }
+  });
+};
+
 exports.getCommentsByArticleId = (id) => {
   const queryString = `SELECT * FROM comments WHERE article_id = $1
   ORDER BY created_at DESC`;
