@@ -1,6 +1,8 @@
 exports.handle400StatusCodes = (error, request, response, next) => {
   if (error.code === "22P02") {
     response.status(400).send({ message: "Bad Request" });
+  } else if (error.code === "23502") {
+    response.status(400).send({ message: "Bad Request" });
   } else {
     next(error);
   }

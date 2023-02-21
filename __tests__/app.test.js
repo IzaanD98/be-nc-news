@@ -208,4 +208,31 @@ describe("/api/articles/:article_id/comments", () => {
         expect(error).toBe("Bad Request");
       });
   });
+  it("404: GET -  responds with 404 status code when username doesn't exist", () => {
+    const item = {
+      username: "sam",
+      body: "Hello my name sam",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(item)
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Not Found");
+      });
+  });
+  it("400: GET -  responds with 400 status code when body is missing", () => {
+    const item = {
+      username: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(item)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
 });
