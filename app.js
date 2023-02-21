@@ -23,7 +23,6 @@ app
   .get("/api/articles/:article_id", fetchArticleById)
   .get("/api/articles/:article_id/comments", fetchCommentsByArticleId)
   .post("/api/articles/:article_id/comments", postCommentByArticleId);
-// .get("/api/users", fetchAllUsers);
 
 app.use(handle400StatusCodes);
 app.use(handle404StatusCodes);

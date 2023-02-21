@@ -4,7 +4,6 @@ const {
   getCommentsByArticleId,
   getArticleById,
   addCommentByArticleId,
-  getAllUsers,
 } = require("../models/newsModel");
 
 exports.fetchAllTopics = (request, response, next) => {
@@ -63,12 +62,3 @@ exports.postCommentByArticleId = (request, response, next) => {
       next(error);
     });
 };
-// exports.fetchAllUsers = (request, response, next) => {
-//   getAllUsers()
-//     .then((users) => {
-//       response.status(200).send({ users });
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// };
