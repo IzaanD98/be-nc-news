@@ -4,6 +4,7 @@ const {
   fetchAllArticles,
   fetchCommentsByArticleId,
   fetchArticleById,
+  patchArticleById,
 } = require("./controllers/newsController");
 const {
   handle500StatusCodes,
@@ -12,12 +13,13 @@ const {
 } = require("./errorHandlingControllers/errorController");
 
 const app = express();
-
+app.use(express.json());
 app
   .get("/api/topics", fetchAllTopics)
   .get("/api/articles", fetchAllArticles)
   .get("/api/articles/:article_id", fetchArticleById)
-  .get("/api/articles/:article_id/comments", fetchCommentsByArticleId);
+  .get("/api/articles/:article_id/comments", fetchCommentsByArticleId)
+  .patch("/api/articles/:article_id", patchArticleById);
 
 app.use(handle400StatusCodes);
 app.use(handleCustomErrors);

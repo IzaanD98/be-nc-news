@@ -151,3 +151,24 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id", () => {
+  it("200: PATCH - responds with updated article with votes changed depending on the request given", () => {
+    const update = { inc_votes: -50 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(update)
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty("topic", expect.any(String));
+        expect(article).toHaveProperty("created_at", expect.any(String));
+        expect(article).toHaveProperty("votes", 50);
+        expect(article).toHaveProperty("article_img_url", expect.any(String));
+        expect(article).toHaveProperty("body", expect.any(String));
+      });
+  });
+});

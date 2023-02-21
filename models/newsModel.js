@@ -43,3 +43,16 @@ exports.getArticleById = (id) => {
     }
   });
 };
+
+exports.updateArticleById = (id, inc_votes) => {
+  const query_string = `
+  UPDATE articles 
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *
+  `;
+
+  return db.query(query_string, [inc_votes, id]).then((results) => {
+    return results.rows[0];
+  });
+};
