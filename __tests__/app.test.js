@@ -112,3 +112,42 @@ describe("app", () => {
     });
   });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  it("200: GET - response with an array of comments for the given article_id of which each comment should have the correct properties", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).not.toHaveLength(0);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("article_id", 1);
+        });
+      });
+  });
+  it("400: GET -  responds with 404 status code of Bad Request when given a string instead of a number", () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then((body) => {
+        const { statusCode } = body;
+        expect(statusCode).toBe(400);
+      });
+  });
+  it("404: GET -  responds with 404 status code of Not Found when given a article_id which doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/1000/comments")
+      .expect(404)
+      .then((body) => {
+        const { statusCode } = body;
+        expect(statusCode).toBe(404);
+      });
+  });
+});

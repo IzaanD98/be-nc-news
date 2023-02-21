@@ -19,6 +19,19 @@ exports.getAllArticles = () => {
   });
 };
 
+exports.getCommentsByArticleId = (id) => {
+  const queryString = `SELECT * FROM comments WHERE article_id = $1
+  ORDER BY created_at DESC`;
+
+  return db.query(queryString, [id]).then((results) => {
+    if (results.rows.length === 0) {
+      return Promise.reject({ status: 404, message: "Comment not found" });
+    } else {
+      return results.rows;
+    }
+  });
+};
+
 exports.getArticleById = (id) => {
   const queryString = `SELECT * FROM articles WHERE article_id = $1`;
 
