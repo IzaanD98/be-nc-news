@@ -70,7 +70,7 @@ describe("app", () => {
     });
   });
   describe("/api/articles/:article_id", () => {
-    it("200: GET - responds with an article object which contains the correct_id and the correct properties and includes comment_count based on article_id", () => {
+    it("200: GET - responds with an article object which contains the correct_id and the correct properties", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -84,7 +84,6 @@ describe("app", () => {
             expect(article).toHaveProperty("topic", expect.any(String));
             expect(article).toHaveProperty("created_at", expect.any(String));
             expect(article).toHaveProperty("votes", expect.any(Number));
-            expect(article).toHaveProperty("comment_count", expect.any(String));
             expect(article).toHaveProperty(
               "article_img_url",
               expect.any(String)
@@ -307,5 +306,28 @@ describe("app", () => {
           });
         });
     });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
+  it("200: GET - responds with an article object which contains the correct_id and the correct properties and includes comment_count", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", 1);
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article).toHaveProperty("comment_count", expect.any(String));
+          expect(article).toHaveProperty("body", expect.any(String));
+        });
+      });
   });
 });
