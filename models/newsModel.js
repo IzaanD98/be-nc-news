@@ -82,3 +82,55 @@ exports.getAllUsers = () => {
     return results.rows;
   });
 };
+
+exports.getQueriedArticles = (
+  topic = "cats",
+  sort_by = "created_at",
+  order
+) => {
+  const validOrder = ["asc", "desc"];
+  const validColumns = [
+    "article_id",
+    "title",
+    "topics",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+    "article_img_url",
+  ];
+  const validTopics = ["mitch", "cats", "paper"];
+
+  if (!validTopics.includes(topic) && topic) {
+    return Promise.reject({ status: 404, message: "Invalid column" });
+  }
+
+  if (!validColumns.includes(sort_by) && sort_by) {
+    return Promise.reject({ status: 404, message: "Invalid column" });
+  }
+
+  if (!validOrder.includes(order) && order) {
+    return Promise.reject({ status: 400, message: "Invalid order query" });
+  }
+
+  let query_string = `SELECT * FROM articles`;
+  const param = [];
+
+  if (topic) {
+    query_string += ` WHERE topic = $1`;
+    param.push(topic);
+  }
+
+  if (sort_by) {
+    query_string += ` ORDER BY $2`;
+    param.push(sort_by);
+  }
+
+  if (order) {
+    query_string += ` ${order}`;
+  }
+
+  return db.query(query_string, param).then((results) => {
+    return results.rows;
+  });
+};
