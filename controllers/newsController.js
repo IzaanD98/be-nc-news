@@ -5,6 +5,7 @@ const {
   getArticleById,
   updateArticleById,
   addCommentByArticleId,
+  getQueriedArticles,
   getAllUsers,
 } = require("../models/newsModel");
 
@@ -19,13 +20,24 @@ exports.fetchAllTopics = (request, response, next) => {
 };
 
 exports.fetchAllArticles = (request, response, next) => {
-  getAllArticles()
-    .then((articles) => {
-      response.status(200).send({ articles });
-    })
-    .catch((error) => {
-      next(error);
-    });
+  const { topic, sort_by, order } = request.query;
+  if (topic || sort_by || order) {
+    getQueriedArticles(topic, sort_by, order)
+      .then((articles) => {
+        response.status(200).send({ articles });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } else {
+    getAllArticles()
+      .then((articles) => {
+        response.status(200).send({ articles });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
 };
 
 exports.fetchArticleById = (request, response, next) => {
