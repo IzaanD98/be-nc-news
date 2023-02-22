@@ -8,6 +8,7 @@ const {
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
+const endpointCheck = require("../endpoints.json");
 
 beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
@@ -456,6 +457,18 @@ describe("/api/articles/:article_id", () => {
           expect(article).toHaveProperty("comment_count", expect.any(String));
           expect(article).toHaveProperty("body", expect.any(String));
         });
+      });
+  });
+});
+
+describe("/api", () => {
+  it("200: GET - responds with a JSON describing all the available endpoints on the API ", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoint } = body;
+        expect(endpoint).toEqual(endpointCheck);
       });
   });
 });

@@ -9,6 +9,8 @@ const {
   getAllUsers,
 } = require("../models/newsModel");
 
+const endpoint = require("../endpoints.json");
+
 exports.fetchAllTopics = (request, response, next) => {
   getAllTopics()
     .then((topics) => {
@@ -98,4 +100,8 @@ exports.fetchAllUsers = (request, response, next) => {
       console.log(error);
       next(error);
     });
+};
+
+exports.fetchAllEndpoints = (request, response, next) => {
+  response.status(200).send({ endpoint });
 };
