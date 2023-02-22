@@ -103,10 +103,6 @@ exports.fetchAllUsers = (request, response, next) => {
     });
 };
 
-exports.fetchAllEndpoints = (request, response, next) => {
-  response.status(200).send({ endpoint });
-};
-
 exports.deleteCommentByCommentId = (request, response, next) => {
   const id = request.params.comment_id;
   removeCommentByCommentId(id)
@@ -116,4 +112,8 @@ exports.deleteCommentByCommentId = (request, response, next) => {
     .catch((error) => {
       next(error);
     });
+};
+
+exports.fetchAllEndpoints = (request, response, next) => {
+  response.status(200).send({ endpoint });
 };
