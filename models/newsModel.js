@@ -79,7 +79,11 @@ exports.getAllUsers = () => {
   });
 };
 
-exports.getQueriedArticles = (topic, sort_by, order) => {
+exports.getQueriedArticles = (
+  topic = "cats",
+  sort_by = "created_at",
+  order
+) => {
   const validOrder = ["asc", "desc"];
   const validColumns = [
     "article_id",
@@ -114,12 +118,12 @@ exports.getQueriedArticles = (topic, sort_by, order) => {
   }
 
   if (sort_by) {
-    query_string += ` ORDER BY $1`;
+    query_string += ` ORDER BY $2`;
     param.push(sort_by);
   }
 
   if (order) {
-    query_string += ` ORDER BY created_at ${order}`;
+    query_string += ` ${order}`;
   }
 
   return db.query(query_string, param).then((results) => {
