@@ -20,7 +20,11 @@ exports.getAllArticles = () => {
 };
 
 exports.getArticleById = (id) => {
-  const queryString = `SELECT * FROM articles WHERE article_id = $1`;
+  const queryString = `SELECT articles.*, COUNT(comments.body) AS comment_count 
+  FROM articles 
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+  GROUP BY articles.article_id`;
 
   return db.query(queryString, [id]).then((results) => {
     if (results.rows.length === 0) {
