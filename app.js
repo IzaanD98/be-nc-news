@@ -19,6 +19,7 @@ const app = express();
 app.use(express.json());
 
 app
+  .get("/api/users", fetchAllUsers)
   .get("/api/topics", fetchAllTopics)
   .get("/api/articles", fetchAllArticles)
   .get("/api/articles/:article_id", fetchArticleById)

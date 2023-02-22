@@ -71,6 +71,15 @@ exports.addCommentByArticleId = (id, comment) => {
   });
 };
 
+exports.getAllUsers = () => {
+  const queryString = `SELECT * FROM users`;
+
+  return db.query(queryString).then((results) => {
+    console.log(results.rows);
+    return results.rows;
+  });
+};
+
 exports.getQueriedArticles = (topic, sort_by, order) => {
   const validOrder = ["asc", "desc"];
   const validColumns = [
