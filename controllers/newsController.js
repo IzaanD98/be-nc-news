@@ -7,6 +7,7 @@ const {
   addCommentByArticleId,
   getQueriedArticles,
   getAllUsers,
+  removeCommentByCommentId,
 } = require("../models/newsModel");
 
 exports.fetchAllTopics = (request, response, next) => {
@@ -96,6 +97,17 @@ exports.fetchAllUsers = (request, response, next) => {
     })
     .catch((error) => {
       console.log(error);
+      next(error);
+    });
+};
+
+exports.deleteCommentByCommentId = (request, response, next) => {
+  const id = request.params.comment_id;
+  removeCommentByCommentId(id)
+    .then(() => {
+      response.status(204).send({ msg: "No content" });
+    })
+    .catch((error) => {
       next(error);
     });
 };
