@@ -290,3 +290,21 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("app", () => {
+  describe("/api/users", () => {
+    it("200: GET - responds with an array of users containing the correct properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const { users } = body;
+          users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          });
+        });
+    });
+  });
+});

@@ -70,3 +70,12 @@ exports.addCommentByArticleId = (id, comment) => {
     return results.rows[0];
   });
 };
+
+exports.getAllUsers = () => {
+  const queryString = `SELECT * FROM users`;
+
+  return db.query(queryString).then((results) => {
+    console.log(results.rows);
+    return results.rows;
+  });
+};
