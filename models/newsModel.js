@@ -91,9 +91,14 @@ exports.getQueriedArticles = (topic, sort_by, order) => {
     "votes",
     "article_img_url",
   ];
+  const validTopics = ["mitch", "cats", "paper"];
+
+  if (!validTopics.includes(topic) && topic) {
+    return Promise.reject({ status: 404, message: "Invalid column" });
+  }
 
   if (!validColumns.includes(sort_by) && sort_by) {
-    return Promise.reject({ status: 400, message: "Invalid column" });
+    return Promise.reject({ status: 404, message: "Invalid column" });
   }
 
   if (!validOrder.includes(order) && order) {
@@ -118,10 +123,6 @@ exports.getQueriedArticles = (topic, sort_by, order) => {
   }
 
   return db.query(query_string, param).then((results) => {
-    if (results.rowCount === 0) {
-      return Promise.reject({ status: 400, message: "Invalid column" });
-    } else {
-      return results.rows;
-    }
+    return results.rows;
   });
 };

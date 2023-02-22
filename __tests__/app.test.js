@@ -92,7 +92,7 @@ describe("app", () => {
           });
         });
     });
-    it("400: GET -  responds with 404 status code of Bad Request when given a string instead of a number", () => {
+    it("400: GET -  responds with 400 status code of Bad Request when given a string instead of a number", () => {
       return request(app)
         .get("/api/articles/banana")
         .expect(400)
@@ -329,10 +329,19 @@ describe("/api/articles?topic=Column", () => {
         });
       });
   });
-  it("400: GET - responds 400 status code if sort_by column is invalid", () => {
+  it("200: GET - responds with an empty array when topic is valid but no articles are present", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(0);
+      });
+  });
+  it("404: GET - responds 404 status code if sort_by column is invalid", () => {
     return request(app)
       .get("/api/articles?topic=banana")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         const error = body.message;
         expect(error).toBe("Invalid column");
@@ -365,10 +374,10 @@ describe("/api/articles?sort_by=Column", () => {
         });
       });
   });
-  it("400: GET - responds 400 status code if sort_by column is invalid", () => {
+  it("404: GET - responds 404 status code if sort_by column is invalid", () => {
     return request(app)
       .get("/api/articles?sort_by=banana")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         const error = body.message;
         expect(error).toBe("Invalid column");
