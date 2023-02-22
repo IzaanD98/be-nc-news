@@ -71,22 +71,49 @@ exports.addCommentByArticleId = (id, comment) => {
   });
 };
 
-exports.getQueriedArticles = (topics, sort_by, order) => {
+exports.getQueriedArticles = (topic, sort_by, order) => {
+  const validOrder = ["asc", "desc"];
+  const validColumns = [
+    "article_id",
+    "title",
+    "topics",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+    "article_img_url",
+  ];
+
+  if (!validColumns.includes(sort_by) && sort_by) {
+    return Promise.reject({ status: 400, message: "Invalid column" });
+  }
+
+  if (!validOrder.includes(order) && order) {
+    return Promise.reject({ status: 400, message: "Invalid order query" });
+  }
+
   let query_string = `SELECT * FROM articles`;
   const param = [];
 
-  if (topics) {
-    query_string += ` WHERE topics = $1`;
-    param.push(topics);
+  if (topic) {
+    query_string += ` WHERE topic = $1`;
+    param.push(topic);
   }
 
   if (sort_by) {
-    query_string += ` WHERE topics = $1`;
-    param.push(topics);
+    query_string += ` ORDER BY $1`;
+    param.push(sort_by);
   }
 
   if (order) {
-    query_string += ` ORDER BY `;
-    param.push(topics);
+    query_string += ` ORDER BY created_at ${order}`;
   }
+
+  return db.query(query_string, param).then((results) => {
+    if (results.rowCount === 0) {
+      return Promise.reject({ status: 400, message: "Invalid column" });
+    } else {
+      return results.rows;
+    }
+  });
 };

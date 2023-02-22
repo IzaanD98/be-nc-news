@@ -19,10 +19,9 @@ exports.fetchAllTopics = (request, response, next) => {
 };
 
 exports.fetchAllArticles = (request, response, next) => {
-  const { topics, sort_by, order } = request.query;
-
-  if (topics || sort_by || order) {
-    getQueriedArticles(topics, sort_by, order)
+  const { topic, sort_by, order } = request.query;
+  if (topic || sort_by || order) {
+    getQueriedArticles(topic, sort_by, order)
       .then((articles) => {
         response.status(200).send({ articles });
       })

@@ -291,91 +291,123 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-// describe("/api/articles?topic=Column", () => {
-//   it("200: GET - responds with filtered articles based on topic provided", () => {
-//     return request(app)
-//       .get("/api/articles?topic=coding")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         articles.forEach((article) => {
-//           expect(article).toHaveProperty("author", expect.any(String));
-//           expect(article).toHaveProperty("title", expect.any(String));
-//           expect(article).toHaveProperty("article_id", expect.any(Number));
-//           expect(article).toHaveProperty("topic", "coding");
-//           expect(article).toHaveProperty("created_at", expect.any(String));
-//           expect(article).toHaveProperty("votes", expect.any(Number));
-//           expect(article).toHaveProperty("article_img_url", expect.any(String));
-//           expect(article).toHaveProperty("body", expect.any(String));
-//         });
-//       });
-//   });
-//   it("200: GET - responds with all articles if topics is missing", () => {
-//     return request(app)
-//       .get("/api/articles?topic=")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         articles.forEach((article) => {
-//           expect(article).toHaveProperty("author", expect.any(String));
-//           expect(article).toHaveProperty("title", expect.any(String));
-//           expect(article).toHaveProperty("article_id", expect.any(Number));
-//           expect(article).toHaveProperty("topic", expect.any(String));
-//           expect(article).toHaveProperty("created_at", expect.any(String));
-//           expect(article).toHaveProperty("votes", expect.any(Number));
-//           expect(article).toHaveProperty("article_img_url", expect.any(String));
-//           expect(article).toHaveProperty("body", expect.any(String));
-//         });
-//       });
-//   });
-// });
+describe("/api/articles?topic=Column", () => {
+  it("200: GET - responds with filtered articles based on topic provided", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("topic", "cats");
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article).toHaveProperty("body", expect.any(String));
+        });
+      });
+  });
+  it("200: GET - responds with all articles if topics is missing", () => {
+    return request(app)
+      .get("/api/articles?topic=")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+        });
+      });
+  });
+  it("400: GET - responds 400 status code if sort_by column is invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Invalid column");
+      });
+  });
+});
 
-// describe("/api/articles?sort_by=Column", () => {
-//   it("200: GET - responds with sorted articles based on column provided", () => {
-//     return request(app)
-//       .get("/api/articles?sort_by=votes")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         expect(articles).toBeSortedBy("votes", {
-//           descending: true,
-//         });
-//       });
-//   });
-//   it("200: GET - responds with sorted articles by dates if column is missing", () => {
-//     return request(app)
-//       .get("/api/articles?sort_by=")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         expect(articles).toBeSortedBy("created_at", {
-//           descending: true,
-//         });
-//       });
-//   });
-// });
+describe("/api/articles?sort_by=Column", () => {
+  it("200: GET - responds with sorted articles based on column provided", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        expect(articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  it("200: GET - responds with sorted articles by dates if column is missing", () => {
+    return request(app)
+      .get("/api/articles?sort_by=")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("400: GET - responds 400 status code if sort_by column is invalid", () => {
+    return request(app)
+      .get("/api/articles?sort_by=banana")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Invalid column");
+      });
+  });
+});
 
-// describe("/api/articles?order=type", () => {
-//   it("200: GET - responds with ordered articles based on type provided", () => {
-//     return request(app)
-//       .get("/api/articles?order=asc")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         expect(articles).toBeSortedBy("created_at", {
-//           ascending: true,
-//         });
-//       });
-//   });
-//   it("200: GET - responds with ordered articles based on type provided", () => {
-//     return request(app)
-//       .get("/api/articles?order=desc")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         expect(articles).toBeSortedBy("created_at", {
-//           descending: true,
-//         });
-//       });
-//   });
-// });
+describe("/api/articles?order=type", () => {
+  it("200: GET - responds with ordered articles based on type provided", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        expect(articles).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+      });
+  });
+  it("200: GET - responds with ordered articles based on type provided", () => {
+    return request(app)
+      .get("/api/articles?order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).not.toHaveLength(0);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("400: GET - responds 400 status code if order type is invalid", () => {
+    return request(app)
+      .get("/api/articles?order=hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Invalid order query");
+      });
+  });
+});
