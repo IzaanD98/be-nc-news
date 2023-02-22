@@ -70,3 +70,23 @@ exports.addCommentByArticleId = (id, comment) => {
     return results.rows[0];
   });
 };
+
+exports.getQueriedArticles = (topics, sort_by, order) => {
+  let query_string = `SELECT * FROM articles`;
+  const param = [];
+
+  if (topics) {
+    query_string += ` WHERE topics = $1`;
+    param.push(topics);
+  }
+
+  if (sort_by) {
+    query_string += ` WHERE topics = $1`;
+    param.push(topics);
+  }
+
+  if (order) {
+    query_string += ` ORDER BY `;
+    param.push(topics);
+  }
+};
