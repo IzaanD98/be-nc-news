@@ -8,6 +8,7 @@ const {
 } = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
+const endpointCheck = require("../endpoints.json");
 
 beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
@@ -456,6 +457,48 @@ describe("/api/articles/:article_id", () => {
           expect(article).toHaveProperty("comment_count", expect.any(String));
           expect(article).toHaveProperty("body", expect.any(String));
         });
+      });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  it("204: DELETE - responds with no content and deletes comment by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((body) => {
+        const { statusCode } = body;
+        expect(statusCode).toBe(204);
+      });
+  });
+  it("400: DELETE - responds with a 400 status code if comment_id is a string", () => {
+    return request(app)
+      .delete("/api/comments/hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+  it("404: DELETE - responds with 404 status code if comment is valid but non-existent", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Comment_id does not exist");
+      });
+  });
+});
+
+describe("/api", () => {
+  it("200: GET - responds with a JSON describing all the available endpoints on the API ", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoint } = body;
+        expect(endpoint).toEqual(endpointCheck);
       });
   });
 });

@@ -7,6 +7,8 @@ const {
   patchArticleById,
   postCommentByArticleId,
   fetchAllUsers,
+  fetchAllEndpoints,
+  deleteCommentByCommentId,
 } = require("./controllers/newsController");
 const {
   handle500StatusCodes,
@@ -25,7 +27,9 @@ app
   .get("/api/articles/:article_id", fetchArticleById)
   .get("/api/articles/:article_id/comments", fetchCommentsByArticleId)
   .patch("/api/articles/:article_id", patchArticleById)
-  .post("/api/articles/:article_id/comments", postCommentByArticleId);
+  .post("/api/articles/:article_id/comments", postCommentByArticleId)
+  .delete("/api/comments/:comment_id", deleteCommentByCommentId)
+  .get("/api", fetchAllEndpoints);
 
 app.use(handle400StatusCodes);
 app.use(handle404StatusCodes);

@@ -141,3 +141,18 @@ exports.getQueriedArticles = async (
     return results.rows;
   });
 };
+
+exports.removeCommentByCommentId = (id) => {
+  const query_string = `DELETE FROM comments WHERE comment_id = $1`;
+
+  return db.query(query_string, [id]).then((results) => {
+    if (results.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        message: "Comment_id does not exist",
+      });
+    } else {
+      return results.rows;
+    }
+  });
+};

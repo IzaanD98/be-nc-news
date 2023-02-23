@@ -7,7 +7,10 @@ const {
   addCommentByArticleId,
   getQueriedArticles,
   getAllUsers,
+  removeCommentByCommentId,
 } = require("../models/newsModel");
+
+const endpoint = require("../endpoints.json");
 
 exports.fetchAllTopics = (request, response, next) => {
   getAllTopics()
@@ -98,4 +101,19 @@ exports.fetchAllUsers = (request, response, next) => {
       console.log(error);
       next(error);
     });
+};
+
+exports.deleteCommentByCommentId = (request, response, next) => {
+  const id = request.params.comment_id;
+  removeCommentByCommentId(id)
+    .then(() => {
+      response.status(204).send({});
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.fetchAllEndpoints = (request, response, next) => {
+  response.status(200).send({ endpoint });
 };
