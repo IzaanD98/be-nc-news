@@ -503,3 +503,35 @@ describe("/api", () => {
       });
   });
 });
+
+describe("/api/users/:username", () => {
+  it("200: GET -  responds with a user object with the correct username value", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toHaveProperty("username", "icellusedkars");
+        expect(user).toHaveProperty("avatar_url", expect.any(String));
+        expect(user).toHaveProperty("name", expect.any(String));
+      });
+  });
+  it("400: GET - responds with a 400 status code if username is a number", () => {
+    return request(app)
+      .get("/api/users/1233")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Invalid username");
+      });
+  });
+  it("404: GET - responds with 404 status code if username is valid but non-existent", () => {
+    return request(app)
+      .get("/api/users/john")
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Username does not exist");
+      });
+  });
+});

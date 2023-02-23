@@ -156,3 +156,22 @@ exports.removeCommentByCommentId = (id) => {
     }
   });
 };
+
+exports.getUserByUsername = (name) => {
+  const query_string = `SELECT * FROM users WHERE username = $1`;
+
+  if (isNaN(name)) {
+    return db.query(query_string, [name]).then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Username does not exist",
+        });
+      } else {
+        return results.rows[0];
+      }
+    });
+  } else {
+    return Promise.reject({ status: 400, message: "Invalid username" });
+  }
+};
