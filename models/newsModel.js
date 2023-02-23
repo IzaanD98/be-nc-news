@@ -83,7 +83,14 @@ exports.getAllUsers = () => {
   });
 };
 
-exports.getQueriedArticles = (
+async function getValidTopicsArr() {
+  const query_string = `SELECT slug FROM topics`;
+  return db.query(query_string).then((results) => {
+    return results.rows.map((topic) => topic.slug);
+  });
+}
+
+exports.getQueriedArticles = async (
   topic = "cats",
   sort_by = "created_at",
   order
@@ -99,7 +106,7 @@ exports.getQueriedArticles = (
     "votes",
     "article_img_url",
   ];
-  const validTopics = ["mitch", "cats", "paper"];
+  const validTopics = await getValidTopicsArr();
 
   if (!validTopics.includes(topic) && topic) {
     return Promise.reject({ status: 404, message: "Invalid column" });
