@@ -194,3 +194,20 @@ exports.updateCommentByCommentId = (id, inc_votes) => {
     }
   });
 };
+
+exports.addArticle = (article) => {
+  const { author, title, body, topic, article_img_url } = article;
+  const query_string = `
+  INSERT INTO articles
+  (author, title, body, topic, article_img_url)
+  VALUES 
+  ($1, $2, $3, $4, $5)
+  RETURNING *,
+  (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id ) as comment_count
+  `;
+  return db
+    .query(query_string, [author, title, body, topic, article_img_url])
+    .then((results) => {
+      return results.rows[0];
+    });
+};

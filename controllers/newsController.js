@@ -10,6 +10,7 @@ const {
   removeCommentByCommentId,
   getUserByUsername,
   updateCommentByCommentId,
+  addArticle,
 } = require("../models/newsModel");
 
 const endpoint = require("../endpoints.json");
@@ -137,6 +138,17 @@ exports.patchCommentByCommentId = (request, response, next) => {
   updateCommentByCommentId(id, inc_votes)
     .then((comment) => {
       response.status(200).send({ comment });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.postArticle = (request, response, next) => {
+  const article = request.body;
+  addArticle(article)
+    .then((newArticle) => {
+      response.status(201).send({ newArticle });
     })
     .catch((error) => {
       next(error);
