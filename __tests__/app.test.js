@@ -9,6 +9,7 @@ const {
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const endpointCheck = require("../endpoints.json");
+const articlesRouter = require("../routes/articles-router");
 
 beforeEach(() => {
   return seed({ topicData, userData, articleData, commentData });
