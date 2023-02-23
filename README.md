@@ -35,8 +35,8 @@ To run the Project-NC-News application, you will need to have Node.js and Postgr
 4. Seed Local Database;
 
    ```
-   npm run setup-dbs
-   npm run seed
+   npm run setup-dbs;
+   npm run seed;
    ```
 
 5. To connect the two databases, you need to create two files that allow access to environment variables: ".env.test" and ".env.development".
