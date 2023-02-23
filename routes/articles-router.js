@@ -4,11 +4,12 @@ const {
   patchArticleById,
   postCommentByArticleId,
   fetchCommentsByArticleId,
+  postArticle,
 } = require("../controllers/newsController");
 
 const articlesRouter = require("express").Router();
 
-articlesRouter.route("/").get(fetchAllArticles);
+articlesRouter.route("/").get(fetchAllArticles).post(postArticle);
 
 articlesRouter
   .route("/:article_id")

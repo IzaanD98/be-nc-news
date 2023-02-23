@@ -584,3 +584,79 @@ describe("/api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("/api/articles", () => {
+  it("POST: 201 - responds with 201 status code and the newly added article with correct properties", () => {
+    const newItem = {
+      author: "butter_bridge",
+      topic: "mitch",
+      title: "coding",
+      body: "how coding improved my life",
+      article_img_url: "www.google.com",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newItem)
+      .expect(201)
+      .then(({ body }) => {
+        const { newArticle } = body;
+        expect(newArticle).toHaveProperty("votes", expect.any(Number));
+        expect(newArticle).toHaveProperty("created_at", expect.any(String));
+        expect(newArticle).toHaveProperty("author", "butter_bridge");
+        expect(newArticle).toHaveProperty(
+          "body",
+          "how coding improved my life"
+        );
+        expect(newArticle).toHaveProperty("topic", "mitch");
+        expect(newArticle).toHaveProperty("title", "coding");
+        expect(newArticle).toHaveProperty("article_img_url", "www.google.com");
+        expect(newArticle).toHaveProperty("article_id", expect.any(Number));
+        expect(newArticle).toHaveProperty("comment_count", expect.any(String));
+      });
+  });
+  it("404: POST -  responds with 404 status code when author doesn't exist", () => {
+    const newItem = {
+      author: "sam",
+      topic: "mitch",
+      title: "coding",
+      body: "how coding improved my life",
+      article_img_url: "www.google.com",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newItem)
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Not Found");
+      });
+  });
+  it("404: POST -  responds with 404 status code when topic doesn't exist", () => {
+    const newItem = {
+      author: "butter_bridge",
+      topic: "sam",
+      title: "coding",
+      body: "how coding improved my life",
+      article_img_url: "www.google.com",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newItem)
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Not Found");
+      });
+  });
+  it("400: POST -  responds with 400 status code when body is empty", () => {
+    const newItem = {};
+    return request(app)
+      .post("/api/articles")
+      .send(newItem)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});
