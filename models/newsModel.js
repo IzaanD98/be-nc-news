@@ -175,3 +175,22 @@ exports.getUserByUsername = (name) => {
     return Promise.reject({ status: 400, message: "Invalid username" });
   }
 };
+
+exports.updateCommentByCommentId = (id, inc_votes) => {
+  const query_string = `
+  UPDATE comments 
+  SET votes = votes + $1
+  WHERE comment_id = $2
+  RETURNING *
+  `;
+  return db.query(query_string, [inc_votes, id]).then((results) => {
+    if (results.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        message: "Comment_id does not exist",
+      });
+    } else {
+      return results.rows[0];
+    }
+  });
+};

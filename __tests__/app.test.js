@@ -535,3 +535,52 @@ describe("/api/users/:username", () => {
       });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  it("200: PATCH - responds with the updated comment with its vote decremented or incremented", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toHaveProperty("comment_id", 1);
+        expect(comment).toHaveProperty("votes", 6);
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+        expect(comment).toHaveProperty("author", expect.any(String));
+        expect(comment).toHaveProperty("body", expect.any(String));
+        expect(comment).toHaveProperty("article_id", expect.any(Number));
+      });
+  });
+  it("400: PATCH - responds with a 400 status code if comment_id is a string", () => {
+    return request(app)
+      .patch("/api/comments/hello")
+      .send({ inc_votes: -1 })
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+  it("404: PATCH - responds with 404 status code if comment_id is valid but non-existent", () => {
+    return request(app)
+      .patch("/api/comments/1000")
+      .send({ inc_votes: -1 })
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Comment_id does not exist");
+      });
+  });
+  it("400: PATCH -  responds with 400 status code if body is missing", () => {
+    const update = {};
+    return request(app)
+      .patch("/api/comments/1")
+      .send(update)
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});

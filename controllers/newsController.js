@@ -9,6 +9,7 @@ const {
   getAllUsers,
   removeCommentByCommentId,
   getUserByUsername,
+  updateCommentByCommentId,
 } = require("../models/newsModel");
 
 const endpoint = require("../endpoints.json");
@@ -124,6 +125,18 @@ exports.fetchUserByUsername = (request, response, next) => {
   getUserByUsername(name)
     .then((user) => {
       response.status(200).send({ user });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.patchCommentByCommentId = (request, response, next) => {
+  const id = request.params.comment_id;
+  const { inc_votes } = request.body;
+  updateCommentByCommentId(id, inc_votes)
+    .then((comment) => {
+      response.status(200).send({ comment });
     })
     .catch((error) => {
       next(error);
