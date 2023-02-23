@@ -8,6 +8,7 @@ const {
   getQueriedArticles,
   getAllUsers,
   removeCommentByCommentId,
+  getUserByUsername,
 } = require("../models/newsModel");
 
 const endpoint = require("../endpoints.json");
@@ -116,4 +117,15 @@ exports.deleteCommentByCommentId = (request, response, next) => {
 
 exports.fetchAllEndpoints = (request, response, next) => {
   response.status(200).send({ endpoint });
+};
+
+exports.fetchUserByUsername = (request, response, next) => {
+  const name = request.params.username;
+  getUserByUsername(name)
+    .then((user) => {
+      response.status(200).send({ user });
+    })
+    .catch((error) => {
+      next(error);
+    });
 };
