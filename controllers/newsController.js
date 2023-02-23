@@ -10,6 +10,8 @@ const {
   removeCommentByCommentId,
 } = require("../models/newsModel");
 
+const endpoint = require("../endpoints.json");
+
 exports.fetchAllTopics = (request, response, next) => {
   getAllTopics()
     .then((topics) => {
@@ -105,9 +107,13 @@ exports.deleteCommentByCommentId = (request, response, next) => {
   const id = request.params.comment_id;
   removeCommentByCommentId(id)
     .then(() => {
-      response.status(204).send({ msg: "No content" });
+      response.status(204).send({});
     })
     .catch((error) => {
       next(error);
     });
+};
+
+exports.fetchAllEndpoints = (request, response, next) => {
+  response.status(200).send({ endpoint });
 };

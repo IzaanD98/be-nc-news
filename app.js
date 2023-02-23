@@ -7,6 +7,7 @@ const {
   patchArticleById,
   postCommentByArticleId,
   fetchAllUsers,
+  fetchAllEndpoints,
   deleteCommentByCommentId,
 } = require("./controllers/newsController");
 const {
@@ -27,7 +28,8 @@ app
   .get("/api/articles/:article_id/comments", fetchCommentsByArticleId)
   .patch("/api/articles/:article_id", patchArticleById)
   .post("/api/articles/:article_id/comments", postCommentByArticleId)
-  .delete("/api/comments/:comment_id", deleteCommentByCommentId);
+  .delete("/api/comments/:comment_id", deleteCommentByCommentId)
+  .get("/api", fetchAllEndpoints);
 
 app.use(handle400StatusCodes);
 app.use(handle404StatusCodes);
