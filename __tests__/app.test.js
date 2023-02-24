@@ -660,3 +660,60 @@ describe("/api/articles", () => {
       });
   });
 });
+
+describe("/api/articles?limit=number", () => {
+  it("200: GET - responds with a limited number of articles", () => {
+    return request(app)
+      .get("/api/articles?limit=10")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(10);
+      });
+  });
+  it("400: GET - responds bad request if the limit provided in the query is a string", () => {
+    return request(app)
+      .get("/api/articles?limit=hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});
+
+describe("/api/articles?p=number", () => {
+  it("200: GET - responds articles specified with the page at which to start ", () => {
+    return request(app)
+      .get("/api/articles?p=2")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles[0]).toHaveProperty("article_id", 7);
+      });
+  });
+  it("400: GET - responds with bad request if string is passed in as p value ", () => {
+    return request(app)
+      .get("/api/articles?p=hey")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});
+
+describe("/api/articles?limit=10", () => {
+  it("200: GET - responds 10 articles and total_count property of all articles", () => {
+    return request(app)
+      .get("/api/articles?limit=10")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(10);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("total_count", "11");
+        });
+      });
+  });
+});

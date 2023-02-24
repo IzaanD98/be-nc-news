@@ -91,9 +91,11 @@ async function getValidTopicsArr() {
 }
 
 exports.getQueriedArticles = async (
-  topic = "cats",
+  topic = "mitch",
   sort_by = "created_at",
-  order
+  order = "desc",
+  limit = 10,
+  p
 ) => {
   const validOrder = ["asc", "desc"];
   const validColumns = [
@@ -120,21 +122,26 @@ exports.getQueriedArticles = async (
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
 
-  let query_string = `SELECT * FROM articles`;
-  const param = [];
-
-  if (topic) {
-    query_string += ` WHERE topic = $1`;
-    param.push(topic);
-  }
+  let query_string = `SELECT articles.*, (SELECT COUNT(*) FROM articles WHERE articles.topic = $1) AS total_count FROM articles WHERE topic = $1`;
+  const param = [topic];
 
   if (sort_by) {
-    query_string += ` ORDER BY $2`;
-    param.push(sort_by);
+    query_string += ` ORDER BY ${sort_by}`;
   }
 
   if (order) {
     query_string += ` ${order}`;
+  }
+
+  if (limit) {
+    query_string += ` LIMIT $2`;
+    param.push(limit);
+  }
+
+  if (p) {
+    const offset = limit * (p - 1);
+    query_string += ` OFFSET $3`;
+    param.push(offset);
   }
 
   return db.query(query_string, param).then((results) => {

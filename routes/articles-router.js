@@ -5,6 +5,7 @@ const {
   postCommentByArticleId,
   fetchCommentsByArticleId,
   postArticle,
+  getLimitedArticles,
 } = require("../controllers/newsController");
 
 const articlesRouter = require("express").Router();
