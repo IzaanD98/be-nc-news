@@ -232,3 +232,17 @@ exports.addArticle = (article) => {
       return results.rows[0];
     });
 };
+
+exports.addTopic = (topic) => {
+  const { slug, description } = topic;
+  const query_string = `
+  INSERT INTO topics
+  (slug, description)
+  VALUES
+  ($1, $2)
+  RETURNING *
+  `;
+  return db.query(query_string, [slug, description]).then((results) => {
+    return results.rows[0];
+  });
+};
