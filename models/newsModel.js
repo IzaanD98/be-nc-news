@@ -52,11 +52,18 @@ exports.updateArticleById = (id, inc_votes) => {
   });
 };
 
-exports.getCommentsByArticleId = (id) => {
-  const queryString = `SELECT * FROM comments WHERE article_id = $1
-  ORDER BY created_at DESC`;
+exports.getCommentsByArticleId = (id, limit = 10, p) => {
+  let queryString = `SELECT * FROM comments WHERE article_id = $1
+  ORDER BY created_at DESC LIMIT $2`;
+  const params = [id, limit];
 
-  return db.query(queryString, [id]).then((results) => {
+  if (p) {
+    const offset = limit * (p - 1);
+    queryString += ` OFFSET $3`;
+    params.push(offset);
+  }
+
+  return db.query(queryString, params).then((results) => {
     return results.rows;
   });
 };
@@ -91,7 +98,7 @@ async function getValidTopicsArr() {
 }
 
 exports.getQueriedArticles = async (
-  topic = "mitch",
+  topic,
   sort_by = "created_at",
   order = "desc",
   limit = 10,
@@ -110,6 +117,10 @@ exports.getQueriedArticles = async (
   ];
   const validTopics = await getValidTopicsArr();
 
+  if (topic === undefined) {
+    topic = validTopics[0];
+  }
+
   if (!validTopics.includes(topic) && topic) {
     return Promise.reject({ status: 404, message: "Invalid column" });
   }
@@ -122,7 +133,10 @@ exports.getQueriedArticles = async (
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
 
-  let query_string = `SELECT articles.*, (SELECT COUNT(*) FROM articles WHERE articles.topic = $1) AS total_count FROM articles WHERE topic = $1`;
+  let query_string = `SELECT articles.*, COUNT(comments.body) AS comment_count, (SELECT COUNT(*) FROM articles WHERE articles.topic = $1) AS total_count FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  WHERE articles.topic = $1
+  GROUP BY articles.article_id`;
   const param = [topic];
 
   if (sort_by) {
