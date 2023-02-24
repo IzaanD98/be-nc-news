@@ -773,3 +773,31 @@ describe("/api/articles/:article_id/comments?p=number", () => {
       });
   });
 });
+
+describe("/api/topics", () => {
+  it("201: POST - responds with the newly added topic", () => {
+    const item = {
+      slug: "food",
+      description: "food is life :)",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(item)
+      .expect(201)
+      .then(({ body }) => {
+        const { newTopic } = body;
+        expect(newTopic).toHaveProperty("slug", "food");
+        expect(newTopic).toHaveProperty("description", "food is life :)");
+      });
+  });
+  it("400: POST - responds with bad request if body is empty ", () => {
+    return request(app)
+      .post("/api/topics")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});

@@ -11,6 +11,7 @@ const {
   getUserByUsername,
   updateCommentByCommentId,
   addArticle,
+  addTopic,
 } = require("../models/newsModel");
 
 const endpoint = require("../endpoints.json");
@@ -150,6 +151,17 @@ exports.postArticle = (request, response, next) => {
   addArticle(article)
     .then((newArticle) => {
       response.status(201).send({ newArticle });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.postTopic = (request, response, next) => {
+  const topic = request.body;
+  addTopic(topic)
+    .then((newTopic) => {
+      response.status(201).send({ newTopic });
     })
     .catch((error) => {
       next(error);
