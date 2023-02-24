@@ -12,6 +12,7 @@ const {
   updateCommentByCommentId,
   addArticle,
   addTopic,
+  removeArticleByArticleId,
 } = require("../models/newsModel");
 
 const endpoint = require("../endpoints.json");
@@ -162,6 +163,17 @@ exports.postTopic = (request, response, next) => {
   addTopic(topic)
     .then((newTopic) => {
       response.status(201).send({ newTopic });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.deleteArticleByArticleId = (request, response, next) => {
+  const id = request.params.article_id;
+  removeArticleByArticleId(id)
+    .then(() => {
+      response.status(204).send({});
     })
     .catch((error) => {
       next(error);

@@ -5,7 +5,8 @@ const {
   postCommentByArticleId,
   fetchCommentsByArticleId,
   postArticle,
-  getLimitedArticles,
+
+  deleteArticleByArticleId,
 } = require("../controllers/newsController");
 
 const articlesRouter = require("express").Router();
@@ -15,7 +16,8 @@ articlesRouter.route("/").get(fetchAllArticles).post(postArticle);
 articlesRouter
   .route("/:article_id")
   .get(fetchArticleById)
-  .patch(patchArticleById);
+  .patch(patchArticleById)
+  .delete(deleteArticleByArticleId);
 
 articlesRouter
   .route("/:article_id/comments")

@@ -801,3 +801,33 @@ describe("/api/topics", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id", () => {
+  it("204: DELETE - responds with 204 status code No content and deletes the article by article_id", () => {
+    return request(app)
+      .delete("/api/articles/1")
+      .expect(204)
+      .then((body) => {
+        const { statusCode } = body;
+        expect(statusCode).toBe(204);
+      });
+  });
+  it("400: DELETE - responds with a 400 status code if article_id is a string", () => {
+    return request(app)
+      .delete("/api/articles/hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+  it("404: DELETE - responds with 404 status code if article_id is valid but non-existent", () => {
+    return request(app)
+      .delete("/api/articles/1000")
+      .expect(404)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Article_id does not exist");
+      });
+  });
+});
