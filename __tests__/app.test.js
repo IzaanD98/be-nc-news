@@ -116,7 +116,7 @@ describe("app", () => {
 });
 
 describe("/api/articles/:article_id/comments", () => {
-  it("200: GET - response with an array of comments for the given article_id of which each comment should have the correct properties", () => {
+  it("200: GET - responds with an array of comments for the given article_id of which each comment should have the correct properties", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -714,6 +714,62 @@ describe("/api/articles?limit=10", () => {
         articles.forEach((article) => {
           expect(article).toHaveProperty("total_count", "11");
         });
+      });
+  });
+});
+
+describe("/api/articles/:article_id/comments?limit=number", () => {
+  it("200: GET - responds with an array comments for an article limited by the number passed in", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toHaveLength(5);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("article_id", 1);
+        });
+      });
+  });
+  it("400: GET - responds with bad request if string is passed in as limit value ", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
+      });
+  });
+});
+
+describe("/api/articles/:article_id/comments?p=number", () => {
+  it("200: GET - responds comments for articles specified with the page at which to start", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=2")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments[0]).toHaveProperty("comment_id", 9);
+        expect(comments[0]).toHaveProperty("votes", expect.any(Number));
+        expect(comments[0]).toHaveProperty("created_at", expect.any(String));
+        expect(comments[0]).toHaveProperty("author", expect.any(String));
+        expect(comments[0]).toHaveProperty("body", expect.any(String));
+        expect(comments[0]).toHaveProperty("article_id", 1);
+      });
+  });
+  it("400: GET - responds with bad request if string is passed in as p value ", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=hello")
+      .expect(400)
+      .then(({ body }) => {
+        const error = body.message;
+        expect(error).toBe("Bad Request");
       });
   });
 });

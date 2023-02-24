@@ -71,7 +71,8 @@ exports.patchArticleById = (request, response, next) => {
 
 exports.fetchCommentsByArticleId = (request, response, next) => {
   const id = request.params.article_id;
-  const promise1 = getCommentsByArticleId(id);
+  const { limit, p } = request.query;
+  const promise1 = getCommentsByArticleId(id, limit, p);
   const promise2 = getArticleById(id);
 
   Promise.all([promise1, promise2])
