@@ -118,27 +118,39 @@ exports.getQueriedArticles = async (
   ];
   const validTopics = await getValidTopicsArr();
 
-  if (topic === undefined) {
-    topic = validTopics[0];
-  }
-
-  if (!validTopics.includes(topic) && topic) {
+  if (topic && !validTopics.includes(topic)) {
     return Promise.reject({ status: 404, message: "Invalid column" });
   }
 
-  if (!validColumns.includes(sort_by) && sort_by) {
+  if (sort_by && !validColumns.includes(sort_by)) {
     return Promise.reject({ status: 404, message: "Invalid column" });
   }
 
-  if (!validOrder.includes(order) && order) {
+  if (order && !validOrder.includes(order)) {
     return Promise.reject({ status: 400, message: "Invalid order query" });
   }
 
-  let query_string = `SELECT articles.*, COUNT(comments.body) AS comment_count, (SELECT COUNT(*) FROM articles WHERE articles.topic = $1) AS total_count FROM articles
-  LEFT JOIN comments ON articles.article_id = comments.article_id
-  WHERE articles.topic = $1
-  GROUP BY articles.article_id`;
-  const param = [topic];
+  let query_string = `SELECT articles.*, COUNT(comments.body) AS comment_count`;
+
+  if (limit) {
+    if (topic) {
+      query_string += `, (SELECT COUNT(*) FROM articles WHERE articles.topic = $1) AS total_count`;
+    } else {
+      query_string += `, (SELECT COUNT(*) FROM articles) AS total_count`;
+    }
+  }
+
+  query_string += ` FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  const param = [];
+
+  if (topic) {
+    query_string += ` WHERE articles.topic = $${param.length + 1}`;
+    param.push(topic);
+  }
+
+  query_string += ` GROUP BY articles.article_id`;
 
   if (sort_by) {
     if (sort_by === "comment_count") {
@@ -153,13 +165,13 @@ exports.getQueriedArticles = async (
   }
 
   if (limit) {
-    query_string += ` LIMIT $2`;
+    query_string += ` LIMIT $${param.length + 1}`;
     param.push(limit);
   }
 
   if (p) {
     const offset = limit * (p - 1);
-    query_string += ` OFFSET $3`;
+    query_string += ` OFFSET $${param.length + 1}`;
     param.push(offset);
   }
 
@@ -167,7 +179,6 @@ exports.getQueriedArticles = async (
     return results.rows;
   });
 };
-
 exports.removeCommentByCommentId = (id) => {
   const query_string = `DELETE FROM comments WHERE comment_id = $1`;
 

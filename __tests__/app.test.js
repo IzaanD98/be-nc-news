@@ -340,7 +340,7 @@ describe("/api/articles?topic=Column", () => {
         expect(articles).toHaveLength(0);
       });
   });
-  it("404: GET - responds 404 status code if sort_by column is invalid", () => {
+  it("404: GET - responds 404 status code if topic column is invalid", () => {
     return request(app)
       .get("/api/articles?topic=banana")
       .expect(404)
@@ -689,7 +689,7 @@ describe("/api/articles?p=number", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles[0]).toHaveProperty("article_id", 7);
+        expect(articles[0]).toHaveProperty("article_id", 11);
       });
   });
   it("400: GET - responds with bad request if string is passed in as p value ", () => {
@@ -712,7 +712,7 @@ describe("/api/articles?limit=10", () => {
         const { articles } = body;
         expect(articles).toHaveLength(10);
         articles.forEach((article) => {
-          expect(article).toHaveProperty("total_count", "11");
+          expect(article).toHaveProperty("total_count", "12");
         });
       });
   });
