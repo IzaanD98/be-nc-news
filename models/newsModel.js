@@ -114,6 +114,7 @@ exports.getQueriedArticles = async (
     "created_at",
     "votes",
     "article_img_url",
+    "comment_count",
   ];
   const validTopics = await getValidTopicsArr();
 
