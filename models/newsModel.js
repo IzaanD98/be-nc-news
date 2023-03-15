@@ -141,7 +141,11 @@ exports.getQueriedArticles = async (
   const param = [topic];
 
   if (sort_by) {
-    query_string += ` ORDER BY ${sort_by}`;
+    if (sort_by === "comment_count") {
+      query_string += ` ORDER BY "${sort_by}"`;
+    } else {
+      query_string += ` ORDER BY ${sort_by}`;
+    }
   }
 
   if (order) {
