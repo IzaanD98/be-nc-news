@@ -98,7 +98,7 @@
       ]
     }
   },
-  "PATCH /api/articles/:article_id/": {
+  "PATCH /api/articles/:article_id": {
     "description": "patches the article votes based on article_id and increments or decrements based on newVotes value",
     "queries": ["article_id"],
     "body": { "inc_votes": "newVote" },
@@ -122,7 +122,7 @@
     "queries": ["article_id"],
     "body": { "username": "a username which exists", "body": "newBody" },
     "exampleResponse": {
-      "comments": [
+      "newItem": [
         {
           "comment_id": 19,
           "body": "Hello my name sam",
@@ -134,7 +134,7 @@
       ]
     }
   },
-  "DELETE /api/articles/comments/:comments_id": {
+  "DELETE /api/comments/:comments_id": {
     "description": "delete the given comment by comment_id",
     "queries": ["comment_id"],
     "exampleResponse": {}
