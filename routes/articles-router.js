@@ -5,7 +5,6 @@ const {
   postCommentByArticleId,
   fetchCommentsByArticleId,
   postArticle,
-
   deleteArticleByArticleId,
 } = require("../controllers/newsController");
 
