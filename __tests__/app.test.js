@@ -346,7 +346,7 @@ describe("/api/articles?topic=Column", () => {
       .expect(404)
       .then(({ body }) => {
         const error = body.message;
-        expect(error).toBe("Invalid column");
+        expect(error).toBe("Invalid topic value");
       });
   });
 });
@@ -382,7 +382,7 @@ describe("/api/articles?sort_by=Column", () => {
       .expect(404)
       .then(({ body }) => {
         const error = body.message;
-        expect(error).toBe("Invalid column");
+        expect(error).toBe("Invalid sort by value");
       });
   });
 });
@@ -418,7 +418,7 @@ describe("/api/articles?order=type", () => {
       .expect(400)
       .then(({ body }) => {
         const error = body.message;
-        expect(error).toBe("Invalid order query");
+        expect(error).toBe("Invalid order value");
       });
   });
 });

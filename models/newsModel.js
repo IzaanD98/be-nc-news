@@ -119,15 +119,15 @@ exports.getQueriedArticles = async (
   const validTopics = await getValidTopicsArr();
 
   if (topic && !validTopics.includes(topic)) {
-    return Promise.reject({ status: 404, message: "Invalid column" });
+    return Promise.reject({ status: 404, message: "Invalid topic value" });
   }
 
   if (sort_by && !validColumns.includes(sort_by)) {
-    return Promise.reject({ status: 404, message: "Invalid column" });
+    return Promise.reject({ status: 404, message: "Invalid sort by value" });
   }
 
   if (order && !validOrder.includes(order)) {
-    return Promise.reject({ status: 400, message: "Invalid order query" });
+    return Promise.reject({ status: 400, message: "Invalid order value" });
   }
 
   let query_string = `SELECT articles.*, COUNT(comments.body) AS comment_count`;
