@@ -264,18 +264,27 @@ exports.addTopic = (topic) => {
 };
 
 exports.removeArticleByArticleId = (id) => {
-  const query_string = `
-  DELETE FROM articles
-  WHERE article_id = $1;
+  const deleteCommentsQuery = `
+    DELETE FROM comments
+    WHERE article_id = $1;
   `;
-  return db.query(query_string, [id]).then((results) => {
-    if (results.rowCount === 0) {
-      return Promise.reject({
-        status: 404,
-        message: "Article_id does not exist",
-      });
-    } else {
-      return results.rows;
-    }
-  });
+  const deleteArticleQuery = `
+    DELETE FROM articles
+    WHERE article_id = $1;
+  `;
+  return db
+    .query(deleteCommentsQuery, [id])
+    .then(() => {
+      return db.query(deleteArticleQuery, [id]);
+    })
+    .then((results) => {
+      if (results.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          message: "Article_id does not exist",
+        });
+      } else {
+        return results.rows;
+      }
+    });
 };
