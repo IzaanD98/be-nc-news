@@ -8,7 +8,7 @@ GET https://project-nc-news-db.onrender.com/api - Returns all available endpoint
 
 ## Summary
 
-Project-NC-News is a web application that provides news articles and comments on various topics. Users can read articles, post comments, and vote on articles and comments.
+InsightCorner BE is a server built with Node.js and PostgreSQL. Users can read articles, post comments, and vote on content. The server uses Express and is tested with Supertest and Jest. The application ensures data integrity and reliability while providing a seamless user experience.
 
 ## Technologies Used
 
